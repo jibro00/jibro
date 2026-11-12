@@ -1,0 +1,707 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>2027</title>
+<style>
+  @font-face {
+    font-family: "LeeSeoyun";
+    src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2202-2@1.0/LeeSeoyun.woff") format("woff");
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+  }
+  :root {
+    --bg: #f3f3f1;
+    --paper: #fcfcfb;
+    --ink: #141414;
+    --muted: #8d8d8a;
+    --line: #e1e1de;
+    --soft: #f6f6f4;
+    --black: #1a1a1a;
+    --black-2: #2a2a2a;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: "LeeSeoyun", "Segoe UI", sans-serif;
+    font-weight: normal;
+  }
+  button, input, textarea { font: inherit; color: inherit; }
+  button { cursor: pointer; }
+  .page {
+    max-width: 1120px;
+    margin: 0 auto;
+    padding: 42px 28px 72px;
+  }
+  .eyebrow {
+    margin: 0 0 6px;
+    font-size: 12px;
+    letter-spacing: 0.22em;
+    color: var(--muted);
+  }
+  h1 {
+    margin: 0 0 28px;
+    font-family: "LeeSeoyun", sans-serif;
+    font-weight: normal;
+    font-size: 64px;
+    line-height: 0.95;
+  }
+  .rule {
+    height: 1px;
+    background: var(--ink);
+    border: 0;
+    margin: 0 0 28px;
+  }
+  .rule.thick {
+    height: 5px;
+    margin: 8px 0 28px;
+  }
+
+  .hubs {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 22px;
+    margin-bottom: 34px;
+  }
+  .hub-name {
+    margin: 14px 0 10px;
+    font-family: "LeeSeoyun", sans-serif;
+    font-size: 30px;
+    font-weight: normal;
+  }
+  .folder {
+    width: 118px;
+    aspect-ratio: 4 / 3;
+    margin-top: 16px;
+    background: var(--black);
+    border-radius: 0 14px 14px 14px;
+    position: relative;
+  }
+  .folder::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: -18%;
+    width: 46%;
+    height: 20%;
+    background: var(--black-2);
+    border-radius: 8px 10px 0 0;
+  }
+  .list-card {
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    min-height: 168px;
+    padding: 8px 8px 10px;
+    display: flex;
+    flex-direction: column;
+  }
+  .pin-list { list-style: none; margin: 0; padding: 0; }
+  .pin-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 8px;
+    border-radius: 10px;
+  }
+  .pin-row:hover { background: var(--soft); }
+  .pin-ico { flex: 0 0 auto; color: var(--ink); display: grid; }
+  .pin-title { flex: 1; font-size: 14px; }
+  .ghost {
+    border: 0;
+    background: transparent;
+    color: var(--muted);
+    padding: 0 4px;
+    line-height: 1;
+  }
+  .adder {
+    display: flex;
+    gap: 6px;
+    margin-top: auto;
+    padding: 6px 6px 2px;
+  }
+  .adder input {
+    flex: 1;
+    border: 0;
+    border-bottom: 1px solid var(--line);
+    background: transparent;
+    padding: 6px 2px;
+    outline: none;
+    font-size: 13px;
+  }
+  .adder input:focus { border-bottom-color: var(--ink); }
+  .adder button, .day-add button, .nav button, .copy-btn {
+    border: 1px solid var(--ink);
+    background: var(--ink);
+    color: white;
+    border-radius: 999px;
+    padding: 6px 10px;
+    font-size: 12px;
+  }
+  .nav button {
+    background: transparent;
+    color: var(--ink);
+    width: 32px;
+    height: 32px;
+    padding: 0;
+  }
+
+  .mid {
+    display: grid;
+    grid-template-columns: 280px 1fr;
+    gap: 22px;
+    align-items: stretch;
+    margin-bottom: 22px;
+  }
+  .side { display: flex; flex-direction: column; gap: 22px; }
+  .card {
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: 18px;
+  }
+  .memo-card, .month-card, .week-card { padding: 18px 18px 16px; }
+  .clock-card {
+    padding: 0;
+    background: transparent;
+    border: 0;
+  }
+  .split-clock {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+  .pane {
+    background: #e7e7e4;
+    border-radius: 16px;
+    min-height: 150px;
+    padding: 18px 12px 12px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+  .pane .big {
+    font-family: "Arial Black", "Segoe UI", sans-serif;
+    font-weight: 900;
+    font-size: 58px;
+    line-height: 0.85;
+    letter-spacing: -0.04em;
+    text-align: center;
+  }
+  .pane .small {
+    font-family: "Segoe UI", sans-serif;
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    color: #2a2a2a;
+  }
+  .card-label {
+    margin: 0;
+    font-size: 13px;
+    color: var(--muted);
+    text-align: left;
+  }
+  .memo-card { flex: 1; display: flex; flex-direction: column; min-height: 210px; }
+  .memo-list { list-style: none; margin: 10px 0 0; padding: 0; display: flex; flex-direction: column; gap: 8px; }
+  .memo-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    line-height: 1.45;
+  }
+
+  .month-head, .week-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 12px;
+  }
+  .month-head h2, .week-head h2 {
+    margin: 0;
+    font-family: "LeeSeoyun", sans-serif;
+    font-weight: normal;
+    font-size: 32px;
+  }
+  .nav { display: flex; gap: 6px; }
+  .dows, .week-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 6px;
+  }
+  .dows span {
+    text-align: center;
+    font-size: 12px;
+    letter-spacing: 0.08em;
+    color: var(--muted);
+    padding-bottom: 6px;
+  }
+  .cell {
+    min-height: 78px;
+    border-radius: 10px;
+    padding: 6px;
+    text-align: left;
+    border: 0;
+    background: transparent;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 3px;
+  }
+  .cell.out { color: #c6c6c3; }
+  .cell.in-week { background: #efefec; }
+  .cell.today .num {
+    background: var(--ink);
+    color: white;
+  }
+  .num {
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    font-size: 12px;
+  }
+  .pill {
+    font-size: 10px;
+    line-height: 1.3;
+    padding: 2px 4px;
+    border-radius: 4px;
+    background: var(--black);
+    color: white;
+    text-align: left;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .pill.done {
+    background: transparent;
+    color: var(--muted);
+    text-decoration: line-through;
+    box-shadow: inset 0 0 0 1px var(--line);
+  }
+
+  .week-card { padding: 18px; }
+  .week-grid { gap: 10px; align-items: stretch; }
+  .day {
+    background: var(--soft);
+    border-radius: 14px;
+    min-height: 240px;
+    padding: 10px 8px;
+    display: flex;
+    flex-direction: column;
+  }
+  .day.head-letter {
+    margin: 0 0 8px;
+    text-align: center;
+    letter-spacing: 0;
+    font-size: 15px;
+    font-weight: normal;
+    line-height: 1.15;
+  }
+  .day-date {
+    display: block;
+    color: var(--muted);
+    font-size: 11px;
+    letter-spacing: 0;
+    margin-top: 2px;
+  }
+  .task-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 6px; }
+  .task {
+    display: flex;
+    align-items: flex-start;
+    gap: 6px;
+    background: var(--paper);
+    border-radius: 8px;
+    padding: 6px;
+  }
+  .box {
+    width: 15px;
+    height: 15px;
+    margin-top: 1px;
+    border: 1.5px solid var(--ink);
+    border-radius: 3px;
+    background: white;
+    flex: 0 0 auto;
+    display: grid;
+    place-items: center;
+    padding: 0;
+  }
+  .box.on { background: var(--ink); color: white; }
+  .box svg { display: block; }
+  .task-name { font-size: 12px; line-height: 1.35; word-break: break-word; }
+  .task.done .task-name { color: var(--muted); text-decoration: line-through; }
+  .day-add { margin-top: auto; padding-top: 8px; }
+  .day-add input {
+    width: 100%;
+    border: 0;
+    background: transparent;
+    border-bottom: 1px solid #d5d5d2;
+    padding: 6px 2px;
+    outline: none;
+    font-size: 12px;
+  }
+  .range { color: var(--muted); font-size: 13px; margin: 2px 0 0; }
+
+  .paste {
+    margin-top: 28px;
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: 18px;
+    padding: 18px;
+  }
+  .paste h2 {
+    margin: 0 0 8px;
+    font-family: "LeeSeoyun", sans-serif;
+    font-size: 28px;
+    font-weight: normal;
+  }
+  .paste p { margin: 0 0 12px; color: #3f3f3d; font-size: 14px; line-height: 1.6; }
+  .paste ol { margin: 0 0 12px; padding-left: 18px; color: #3f3f3d; font-size: 14px; line-height: 1.6; }
+  pre {
+    margin: 0;
+    white-space: pre-wrap;
+    background: #f6f6f4;
+    border-radius: 12px;
+    padding: 14px;
+    font-family: ui-monospace, Consolas, monospace;
+    font-size: 12.5px;
+    line-height: 1.55;
+  }
+  .copy-btn { margin-bottom: 10px; }
+
+  @media (max-width: 860px) {
+    h1 { font-size: 48px; }
+    .hubs, .mid, .dows, .week-grid { grid-template-columns: 1fr; }
+    .dows { display: none; }
+    .cell { min-height: 0; }
+  }
+</style>
+</head>
+<body>
+<main class="page">
+  <p class="eyebrow">RESEARCH</p>
+  <h1>2027</h1>
+  <hr class="rule">
+
+  <section class="hubs" id="hubs"></section>
+  <hr class="rule thick">
+
+  <section class="mid">
+    <div class="side">
+      <article class="clock-card">
+        <div class="split-clock">
+          <div class="pane">
+            <div class="big" id="clk-hour">00</div>
+            <div class="small" id="clk-ampm">AM</div>
+          </div>
+          <div class="pane">
+            <div class="big" id="clk-min">00</div>
+            <div class="small" id="clk-day">MONDAY</div>
+          </div>
+        </div>
+      </article>
+      <article class="card memo-card">
+        <p class="card-label">MEMO</p>
+        <ul class="memo-list" id="memo-list"></ul>
+        <form id="memo-form" class="adder">
+          <input name="title" placeholder="메모" aria-label="메모 추가">
+          <button type="submit">추가</button>
+        </form>
+      </article>
+    </div>
+    <article class="card month-card">
+      <div class="month-head">
+        <h2 id="month-title">2027년 1월</h2>
+        <div class="nav">
+          <button type="button" id="prev-month" aria-label="이전 달">‹</button>
+          <button type="button" id="next-month" aria-label="다음 달">›</button>
+        </div>
+      </div>
+      <div class="dows" id="dows"></div>
+      <div class="week-grid" id="month-grid"></div>
+    </article>
+  </section>
+
+  <article class="card week-card">
+    <div class="week-head">
+      <div>
+        <h2>주간</h2>
+        <p class="range" id="week-range"></p>
+      </div>
+      <div class="nav">
+        <button type="button" id="prev-week" aria-label="이전 주">‹</button>
+        <button type="button" id="next-week" aria-label="다음 주">›</button>
+      </div>
+    </div>
+    <div class="week-grid" id="week-grid"></div>
+  </article>
+
+  <section class="paste">
+    <h2>노션에 붙일 내용</h2>
+    <p>아래 글을 노션에 붙여 넣은 뒤, 칸 배치만 맞추면 이 화면과 같은 틀이 됩니다. 시계는 이 폴더의 clock.html 주소를 /embed 로 넣습니다.</p>
+    <ol>
+      <li>Research, Project, Study 를 가로 세 칸으로 두고, 📌 줄은 핀 아이콘 페이지로 만듭니다.</li>
+      <li>왼쪽 아래에 시계와 메모를 세로로 두고, 오른쪽에 할 일 표를 데이터베이스 달력 보기로 둡니다.</li>
+      <li>그 아래 전체 너비로 같은 할 일의 주간 보기를 두고, 완료는 체크박스로 둡니다. 주간에 적은 일은 큰 달력에도 나타납니다.</li>
+    </ol>
+    <button class="copy-btn" type="button" id="copy">이 텍스트 복사</button>
+    <pre id="paste-text"></pre>
+  </section>
+</main>
+<script>
+const DOW = ["M", "T", "W", "T", "F", "S", "S"];
+const DOW_FULL = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
+const DAY_NAME = ["SUNDAY", "MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY", "SATURDAY"];
+const pinsKey = "jibro-2027-pins";
+const taskKey = "jibro-2027-tasks";
+const memoKey = "jibro-2027-memos";
+
+const defaultPins = {
+  Research: ["문헌 조사", "실험 설계"],
+  Project: ["데이터 파이프라인"],
+  Study: ["논문 읽기"]
+};
+const defaultTasks = [
+  { id: 1, title: "논문 초고 정리", date: "2027-01-04", done: false },
+  { id: 2, title: "실험 로그 검토", date: "2027-01-06", done: true },
+  { id: 3, title: "세미나 자료", date: "2027-01-08", done: false }
+];
+
+let pins = load(pinsKey, defaultPins);
+let tasks = load(taskKey, defaultTasks);
+let memos = load(memoKey, []);
+let nextId = tasks.reduce((m, t) => Math.max(m, t.id), 0) + 1;
+let nextMemo = memos.reduce((m, t) => Math.max(m, t.id), 0) + 1;
+let cursor = new Date(2027, 0, 4);
+let viewMonth = new Date(2027, 0, 1);
+
+function load(key, fallback) {
+  try {
+    const raw = localStorage.getItem(key);
+    return raw ? JSON.parse(raw) : structuredClone(fallback);
+  } catch (e) {
+    return structuredClone(fallback);
+  }
+}
+function save() {
+  localStorage.setItem(pinsKey, JSON.stringify(pins));
+  localStorage.setItem(taskKey, JSON.stringify(tasks));
+  localStorage.setItem(memoKey, JSON.stringify(memos));
+}
+function iso(d) {
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, "0");
+  const day = String(d.getDate()).padStart(2, "0");
+  return y + "-" + m + "-" + day;
+}
+function parse(s) {
+  const [y, m, d] = s.split("-").map(Number);
+  return new Date(y, m - 1, d);
+}
+function startOfWeek(date) {
+  const d = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+  const day = d.getDay();
+  const diff = day === 0 ? -6 : 1 - day;
+  d.setDate(d.getDate() + diff);
+  return d;
+}
+function addDays(date, n) {
+  const d = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+  d.setDate(d.getDate() + n);
+  return d;
+}
+function sameDay(a, b) {
+  return a.getFullYear() === b.getFullYear() && a.getMonth() === b.getMonth() && a.getDate() === b.getDate();
+}
+function escapeHtml(s) {
+  return s.replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+}
+const pinSvg = '<svg class="pin-ico" width="14" height="14" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 22s7-7.4 7-12a7 7 0 1 0-14 0c0 4.6 7 12 7 12z"/><circle cx="12" cy="10" r="2.3" fill="#fcfcfb"/></svg>';
+const checkSvg = '<svg width="11" height="11" viewBox="0 0 12 12" aria-hidden="true"><path d="M2 6.2 4.6 9 10 3" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>';
+
+function renderHubs() {
+  const root = document.getElementById("hubs");
+  root.innerHTML = Object.keys(pins).map((name) => {
+    const items = pins[name].map((title, i) =>
+      '<li class="pin-row">' + pinSvg +
+      '<span class="pin-title">' + escapeHtml(title) + '</span>' +
+      '<button class="ghost" data-del-pin="' + name + '" data-i="' + i + '" aria-label="삭제">×</button></li>'
+    ).join("");
+    return '<article><div class="folder"></div><h2 class="hub-name">' + name + '</h2><div class="list-card"><ul class="pin-list">' + items + '</ul><form class="adder" data-hub="' + name + '"><input name="title" placeholder="페이지 이름" aria-label="' + name + ' 페이지 추가"><button type="submit">추가</button></form></div></article>';
+  }).join("");
+}
+
+function tasksOn(dateStr) {
+  return tasks.filter((t) => t.date === dateStr);
+}
+
+function renderMonth() {
+  document.getElementById("month-title").textContent = viewMonth.getFullYear() + "년 " + (viewMonth.getMonth() + 1) + "월";
+  document.getElementById("dows").innerHTML = DOW.map((d) => "<span>" + d + "</span>").join("");
+  const grid = document.getElementById("month-grid");
+  const first = new Date(viewMonth.getFullYear(), viewMonth.getMonth(), 1);
+  const lead = (first.getDay() + 6) % 7;
+  const start = addDays(first, -lead);
+  const weekStart = startOfWeek(cursor);
+  const weekEnd = addDays(weekStart, 6);
+  const today = new Date();
+  let html = "";
+  for (let i = 0; i < 42; i++) {
+    const day = addDays(start, i);
+    const key = iso(day);
+    const inMonth = day.getMonth() === viewMonth.getMonth();
+    const inWeek = day >= weekStart && day <= weekEnd;
+    const cls = ["cell", inMonth ? "" : "out", inWeek ? "in-week" : "", sameDay(day, today) ? "today" : ""].filter(Boolean).join(" ");
+    const pills = tasksOn(key).slice(0, 3).map((t) =>
+      '<span class="pill' + (t.done ? " done" : "") + '">' + escapeHtml(t.title) + "</span>"
+    ).join("");
+    html += '<button type="button" class="' + cls + '" data-day="' + key + '"><span class="num">' + day.getDate() + "</span>" + pills + "</button>";
+  }
+  grid.innerHTML = html;
+}
+
+function renderWeek() {
+  const start = startOfWeek(cursor);
+  const end = addDays(start, 6);
+  document.getElementById("week-range").textContent =
+    (start.getMonth() + 1) + "월 " + start.getDate() + "일  –  " + (end.getMonth() + 1) + "월 " + end.getDate() + "일";
+  const grid = document.getElementById("week-grid");
+  let html = "";
+  for (let i = 0; i < 7; i++) {
+    const day = addDays(start, i);
+    const key = iso(day);
+    const items = tasksOn(key).map((t) =>
+      '<li class="task' + (t.done ? " done" : "") + '">' +
+      '<button type="button" class="box' + (t.done ? " on" : "") + '" data-toggle="' + t.id + '" aria-label="완료">' + (t.done ? checkSvg : "") + "</button>" +
+      '<span class="task-name">' + escapeHtml(t.title) + "</span></li>"
+    ).join("");
+    html += '<section class="day"><h3 class="head-letter">' + DOW_FULL[i] + '<span class="day-date">' + (day.getMonth() + 1) + "/" + day.getDate() + "</span></h3><ul class=\"task-list\">" + items + '</ul><form class="day-add" data-date="' + key + '"><input name="title" placeholder="할 일" aria-label="할 일 추가"></form></section>';
+  }
+  grid.innerHTML = html;
+}
+
+function notionText() {
+  const lines = ["2027", ""];
+  Object.keys(pins).forEach((name) => {
+    lines.push(name);
+    pins[name].forEach((title) => lines.push("📌 " + title));
+    lines.push("");
+  });
+  lines.push("시계");
+  lines.push("clock.html 주소를 /embed 로 넣기");
+  lines.push("");
+  lines.push("메모");
+  memos.filter((m) => !m.done).forEach((m) => lines.push("- [ ] " + m.text));
+  if (!memos.some((m) => !m.done)) lines.push("메모");
+  lines.push("");
+  lines.push("할 일");
+  lines.push("이름\t날짜\t완료");
+  tasks.forEach((t) => lines.push(t.title + "\t" + t.date + "\t" + (t.done ? "완료" : "")));
+  return lines.join("\n");
+}
+function renderPaste() {
+  document.getElementById("paste-text").textContent = notionText();
+}
+function renderMemos() {
+  const visible = memos.filter((m) => !m.done);
+  document.getElementById("memo-list").innerHTML = visible.map((m) =>
+    '<li class="memo-row"><button type="button" class="box" data-memo="' + m.id + '" aria-label="메모 치우기"></button><span>' + escapeHtml(m.text) + "</span></li>"
+  ).join("");
+}
+function render() {
+  renderHubs();
+  renderMonth();
+  renderWeek();
+  renderMemos();
+  renderPaste();
+}
+
+function tick() {
+  const now = new Date();
+  let h = now.getHours();
+  const ampm = h >= 12 ? "PM" : "AM";
+  h = h % 12;
+  if (h === 0) h = 12;
+  document.getElementById("clk-hour").textContent = String(h).padStart(2, "0");
+  document.getElementById("clk-min").textContent = String(now.getMinutes()).padStart(2, "0");
+  document.getElementById("clk-ampm").textContent = ampm;
+  document.getElementById("clk-day").textContent = DAY_NAME[now.getDay()];
+}
+tick();
+setInterval(tick, 1000);
+
+document.body.addEventListener("submit", (e) => {
+  const memoForm = e.target.closest("#memo-form");
+  const hubForm = memoForm ? null : e.target.closest("form.adder");
+  const dayForm = e.target.closest("form.day-add");
+  if (!hubForm && !dayForm && !memoForm) return;
+  e.preventDefault();
+  const title = new FormData(e.target).get("title").trim();
+  if (!title) return;
+  if (hubForm) pins[hubForm.dataset.hub].push(title);
+  if (dayForm) tasks.push({ id: nextId++, title, date: dayForm.dataset.date, done: false });
+  if (memoForm) memos.push({ id: nextMemo++, text: title, done: false });
+  save();
+  render();
+});
+document.body.addEventListener("click", (e) => {
+  const del = e.target.closest("[data-del-pin]");
+  const memoBtn = e.target.closest("[data-memo]");
+  const toggle = e.target.closest("[data-toggle]");
+  const day = e.target.closest("[data-day]");
+  if (memoBtn) {
+    const memo = memos.find((m) => m.id === Number(memoBtn.dataset.memo));
+    if (memo) memo.done = true;
+    save();
+    render();
+  } else if (del) {
+    pins[del.dataset.delPin].splice(Number(del.dataset.i), 1);
+    save();
+    render();
+  } else if (toggle) {
+    const task = tasks.find((t) => t.id === Number(toggle.dataset.toggle));
+    if (task) task.done = !task.done;
+    save();
+    render();
+  } else if (day) {
+    cursor = parse(day.dataset.day);
+    viewMonth = new Date(cursor.getFullYear(), cursor.getMonth(), 1);
+    render();
+  }
+});
+document.getElementById("prev-month").onclick = () => {
+  viewMonth = new Date(viewMonth.getFullYear(), viewMonth.getMonth() - 1, 1);
+  render();
+};
+document.getElementById("next-month").onclick = () => {
+  viewMonth = new Date(viewMonth.getFullYear(), viewMonth.getMonth() + 1, 1);
+  render();
+};
+document.getElementById("prev-week").onclick = () => {
+  cursor = addDays(startOfWeek(cursor), -7);
+  viewMonth = new Date(cursor.getFullYear(), cursor.getMonth(), 1);
+  render();
+};
+document.getElementById("next-week").onclick = () => {
+  cursor = addDays(startOfWeek(cursor), 7);
+  viewMonth = new Date(cursor.getFullYear(), cursor.getMonth(), 1);
+  render();
+};
+document.getElementById("copy").onclick = async () => {
+  const text = notionText();
+  try {
+    await navigator.clipboard.writeText(text);
+    document.getElementById("copy").textContent = "복사됨";
+  } catch (e) {
+    document.getElementById("copy").textContent = "아래 글을 직접 선택해 복사";
+  }
+  setTimeout(() => { document.getElementById("copy").textContent = "이 텍스트 복사"; }, 1600);
+};
+
+render();
+</script>
+</body>
+</html>

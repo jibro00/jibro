@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Clock</title>
+<style>
+  html, body {
+    margin: 0;
+    height: 100%;
+    background: transparent;
+    color: #141414;
+  }
+  body { display: grid; place-items: center; }
+  .split-clock {
+    width: min(100%, 420px);
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+  .pane {
+    background: #e7e7e4;
+    border-radius: 16px;
+    min-height: 180px;
+    padding: 22px 14px 14px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+  .big {
+    font-family: "Arial Black", "Segoe UI", sans-serif;
+    font-weight: 900;
+    font-size: 72px;
+    line-height: 0.85;
+    letter-spacing: -0.04em;
+    text-align: center;
+  }
+  .small {
+    font-family: "Segoe UI", sans-serif;
+    font-size: 12px;
+    letter-spacing: 0.14em;
+  }
+</style>
+</head>
+<body>
+<div class="split-clock">
+  <div class="pane">
+    <div class="big" id="clk-hour">00</div>
+    <div class="small" id="clk-ampm">AM</div>
+  </div>
+  <div class="pane">
+    <div class="big" id="clk-min">00</div>
+    <div class="small" id="clk-day">MONDAY</div>
+  </div>
+</div>
+<script>
+const DAY_NAME = ["SUNDAY", "MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY", "SATURDAY"];
+function tick() {
+  const now = new Date();
+  let h = now.getHours();
+  const ampm = h >= 12 ? "PM" : "AM";
+  h = h % 12;
+  if (h === 0) h = 12;
+  document.getElementById("clk-hour").textContent = String(h).padStart(2, "0");
+  document.getElementById("clk-min").textContent = String(now.getMinutes()).padStart(2, "0");
+  document.getElementById("clk-ampm").textContent = ampm;
+  document.getElementById("clk-day").textContent = DAY_NAME[now.getDay()];
+}
+tick();
+setInterval(tick, 1000);
+</script>
+</body>
+</html>
